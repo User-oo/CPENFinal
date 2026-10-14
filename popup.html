@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app">
+        <header class="header">
+            <a class="brand" href="./popup.html">RESET</a>
+
+            <details class="menu">
+                <summary aria-label="Open or close settings">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </summary>
+
+                <section class="settings" aria-label="Settings">
+                    <h2>Settings</h2>
+
+                    <label class="setting-row">
+                        <span>Graphite dark theme</span>
+                        <input id="dark-theme" class="switch" type="checkbox">
+                    </label>
+
+                    <label class="field">
+                        Filter strength
+                        <select>
+                            <option>Balanced</option>
+                            <option>Strict</option>
+                            <option>Gentle</option>
+                        </select>
+                    </label>
+
+                    <label class="field">
+                        Break reminder
+                        <select>
+                            <option>After 15 minutes</option>
+                            <option>After 30 minutes</option>
+                            <option>Off</option>
+                        </select>
+                    </label>
+
+                    <p class="settings-note">
+                        Interface preview. Filtering is not connected yet.
+                    </p>
+                </section>
+            </details>
+        </header>
+
+        <section class="intro">
+            <h1>Space to learn.</h1>
+            <p>A softer way to shape your feed.</p>
+        </section>
+
+        <section class="bubble">
+            <label class="setting-row">
+                <span>Education mode</span>
+                <input class="switch" type="checkbox" checked>
+            </label>
+        </section>
+
+        <section class="bubble" aria-labelledby="topics-heading">
+            <h2 id="topics-heading">Your learning bubbles</h2>
+
+            <div class="topics">
+                <label class="topic">
+                    <input type="checkbox" checked>
+                    <span>Science</span>
+                </label>
+
+                <label class="topic">
+                    <input type="checkbox">
+                    <span>Art</span>
+                </label>
+
+                <label class="topic">
+                    <input type="checkbox" checked>
+                    <span>Technology</span>
+                </label>
+
+                <label class="topic">
+                    <input type="checkbox">
+                    <span>History</span>
+                </label>
+            </div>
+        </section>
+
+        <footer>Learn more. Scroll with purpose.</footer>
+    </main>
+</body>
+</html>
