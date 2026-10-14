@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "AI Algorithm Reset",
-    "version": "0.1.0",
-    "description": "Filter YouTube Home videos by learning topics.",
+    "version": "0.2.0",
+    "description": "Filter YouTube videos by learning topics.",
     "permissions": ["storage"],
     "action": {
         "default_popup": "popup.html"
@@ -10,8 +10,9 @@
     "content_scripts": [
         {
             "matches": ["https://www.youtube.com/*"],
+            "css": ["content.css"],
             "js": ["content.js"],
-            "run_at": "document_idle"
+            "run_at": "document_start"
         }
     ]
 }

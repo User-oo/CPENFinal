@@ -1,0 +1,51 @@
+/*
+Hide known video cards until settings have loaded.
+When filtering is active, only checked, approved cards appear.
+*/
+html:not([data-reset-filter="off"]) :is(
+    ytd-rich-item-renderer,
+    ytd-video-renderer,
+    ytd-grid-video-renderer,
+    ytd-compact-video-renderer,
+    yt-lockup-view-model,
+    ytd-reel-item-renderer,
+    ytm-shorts-lockup-view-model,
+    ytd-channel-video-player-renderer
+):not([data-reset-approved]) {
+    display: none !important;
+}
+
+/* Channel and playlist cards aren't individual approved videos. */
+html:not([data-reset-filter="off"]) :is(
+    ytd-channel-renderer,
+    ytd-playlist-renderer,
+    ytd-grid-playlist-renderer,
+    ytd-radio-renderer
+) {
+    display: none !important;
+}
+
+/* Strict mode hides Shorts shelves, navigation, and player. */
+html[data-reset-strict="true"] :is(
+    ytd-reel-shelf-renderer,
+    ytd-rich-shelf-renderer[is-shorts],
+    ytd-shorts,
+    ytd-reel-item-renderer,
+    ytm-shorts-lockup-view-model,
+    grid-shelf-view-model:has(a[href*="/shorts/"]),
+    ytd-guide-entry-renderer:has(a[href^="/shorts"]),
+    ytd-mini-guide-entry-renderer:has(a[href^="/shorts"])
+) {
+    display: none !important;
+}
+
+/* Also covers individual Shorts inside normal video lists. */
+html[data-reset-strict="true"] :is(
+    ytd-rich-item-renderer,
+    ytd-video-renderer,
+    ytd-grid-video-renderer,
+    ytd-compact-video-renderer,
+    yt-lockup-view-model
+):has(a[href*="/shorts/"]) {
+    display: none !important;
+}
