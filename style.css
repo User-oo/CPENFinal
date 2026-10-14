@@ -337,3 +337,27 @@ footer {
     gap: 8px;
     margin-bottom: 16px;
 }
+
+.find-videos {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 24px;
+    background: var(--selected);
+    color: var(--selected-text);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.find-videos:hover {
+    opacity: 0.85;
+}
+
+.find-videos:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}

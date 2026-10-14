@@ -319,3 +319,79 @@
             }
         });
 })();
+
+function setupLearningSearch() {
+    const button = document.getElementById("find-videos");
+    const footer = document.querySelector("footer");
+
+    if (!button) return;
+
+    button.addEventListener("click", () => {
+        const topicInputs = [
+            ...document.querySelectorAll(".topic input")
+        ];
+
+        // Wait until the existing popup code finishes loading settings.
+        if (topicInputs.some(input => input.disabled)) {
+            footer.textContent = "Settings are loading. Try again shortly.";
+            return;
+        }
+
+        const selectedTopics = topicInputs
+            .filter(input => input.checked)
+            .map(input =>
+                input.closest(".topic")
+                    .querySelector("span")
+                    .textContent.trim()
+            );
+
+        if (selectedTopics.length === 0) {
+            footer.textContent = "Select at least one learning bubble first.";
+            return;
+        }
+
+        // Rotate through selected topics on this device.
+        const storageKey = "reset-learning-search-index";
+        const storedIndex = Number(localStorage.getItem(storageKey));
+
+        const index = Number.isInteger(storedIndex) && storedIndex >= 0
+            ? storedIndex
+            : 0;
+
+        const topic = selectedTopics[index % selectedTopics.length];
+
+        const searches = {
+            Science: "science explained",
+            Technology: "technology explained tutorial",
+            Art: "art tutorial",
+            History: "history documentary explained"
+        };
+
+        const query = searches[topic] || `${topic} explained`;
+
+        const url = new URL("https://www.youtube.com/results");
+        url.searchParams.set("search_query", query);
+        url.searchParams.set("reset_learning", topic);
+
+        localStorage.setItem(storageKey, String(index + 1));
+
+        // Open the search in the current popup's browser tab.
+        // An ordinary link needs no additional extension permission.
+        const link = document.createElement("a");
+        link.href = url.href;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        footer.textContent = `Opened a ${topic} learning search.`;
+    });
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupLearningSearch);
+} else {
+    setupLearningSearch();
+}
