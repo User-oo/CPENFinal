@@ -1,105 +1,145 @@
-// Find the controls in popup.html.
-const darkTheme = document.querySelector("#dark-theme");
-const educationMode = document.querySelector("#education-mode");
-const filterStrength = document.querySelector("#filter-strength");
-const breakReminder = document.querySelector("#break-reminder");
-const topicInputs = document.querySelectorAll(".topic input");
-
-const controls = [
-    darkTheme,
-    educationMode,
-    filterStrength,
-    breakReminder,
-    ...topicInputs
-];
-
-// Use the existing note to show loading or saving problems.
-const statusNote = document.querySelector(".settings-note");
-statusNote.setAttribute("role", "status");
-
-const defaultSettings = {
+const defaults = {
     darkTheme: false,
-    educationMode: true,
+    educationMode: false,
     filterStrength: "Balanced",
     breakReminder: "After 15 minutes",
     topics: ["Science", "Technology"]
 };
 
-// Get the text beside a topic checkbox.
-function getTopicName(input) {
-    return input.nextElementSibling.textContent.trim();
-}
+async function startPopup() {
+    const darkTheme = document.getElementById("dark-theme");
+    const educationMode = document.getElementById("education-mode");
+    const filterStrength = document.getElementById("filter-strength");
+    const breakReminder = document.getElementById("break-reminder");
+    const topics = [...document.querySelectorAll(".topic input")];
 
-// Collect the current selections.
-function readSettings() {
-    return {
-        darkTheme: darkTheme.checked,
-        educationMode: educationMode.checked,
-        filterStrength: filterStrength.value,
-        breakReminder: breakReminder.value,
-        topics: [...topicInputs]
-            .filter(input => input.checked)
-            .map(getTopicName)
-    };
-}
+    const footer = document.querySelector("footer");
+    const settingsNote = document.querySelector(".settings-note");
 
-// Apply previously saved selections.
-function applySettings(settings) {
-    darkTheme.checked = settings.darkTheme;
-    educationMode.checked = settings.educationMode;
-    filterStrength.value = settings.filterStrength;
-    breakReminder.value = settings.breakReminder;
+    function showStatus(message) {
+        if (footer) {
+            footer.textContent = message;
+            footer.setAttribute("role", "status");
+        }
 
-    topicInputs.forEach(input => {
-        input.checked = settings.topics.includes(getTopicName(input));
-    });
-}
+        if (settingsNote) {
+            settingsNote.textContent = message;
+        }
+    }
 
-// Queue saves so rapid changes are written in order.
-let saveQueue = Promise.resolve();
+    // Check that popup.html has the IDs this script needs.
+    if (
+        !darkTheme ||
+        !educationMode ||
+        !filterStrength ||
+        !breakReminder ||
+        topics.length === 0
+    ) {
+        showStatus("HTML mismatch: check the control IDs in popup.html.");
+        console.error("Reset: one or more popup controls are missing.");
+        return;
+    }
 
-function saveSettings() {
-    const settings = readSettings();
+    const controls = [
+        darkTheme,
+        educationMode,
+        filterStrength,
+        breakReminder,
+        ...topics
+    ];
 
-    saveQueue = saveQueue
-        .then(() => chrome.storage.local.set({ settings }))
-        .then(() => {
-            statusNote.textContent =
-                "Settings saved on this device. Filtering is not connected yet.";
-        })
-        .catch(error => {
-            console.error("Could not save settings:", error);
-            statusNote.textContent =
-                "Settings could not be saved. Try changing the setting again.";
+    function topicName(input) {
+        return input.closest(".topic")
+            .querySelector("span")
+            .textContent.trim();
+    }
+
+    function applySettings(settings) {
+        darkTheme.checked = settings.darkTheme;
+        educationMode.checked = settings.educationMode;
+        filterStrength.value = settings.filterStrength;
+        breakReminder.value = settings.breakReminder;
+
+        topics.forEach(input => {
+            input.checked = settings.topics.includes(topicName(input));
         });
-}
+    }
 
-// Load settings before allowing changes.
-async function initializePopup() {
+    function readSettings() {
+        return {
+            darkTheme: darkTheme.checked,
+            educationMode: educationMode.checked,
+            filterStrength: filterStrength.value,
+            breakReminder: breakReminder.value,
+            topics: topics
+                .filter(input => input.checked)
+                .map(topicName)
+        };
+    }
+
+    if (!globalThis.chrome?.storage?.local) {
+        showStatus("Open this popup through the installed extension.");
+        return;
+    }
+
+    // Briefly lock controls while loading saved choices.
     controls.forEach(control => {
         control.disabled = true;
     });
 
+    let loaded = false;
+
     try {
         const result = await chrome.storage.local.get("settings");
+        const settings = { ...defaults, ...result.settings };
 
-        const settings = {
-            ...defaultSettings,
-            ...result.settings
-        };
+        if (!Array.isArray(settings.topics)) {
+            settings.topics = [...defaults.topics];
+        }
 
         applySettings(settings);
+        loaded = true;
 
+        showStatus("Settings loaded from this device.");
+    } catch (error) {
+        console.error("Reset loading error:", error);
+        showStatus("Could not load settings. Reload the extension.");
+    } finally {
         controls.forEach(control => {
-            control.addEventListener("change", saveSettings);
             control.disabled = false;
         });
-    } catch (error) {
-        console.error("Could not load settings:", error);
-        statusNote.textContent =
-            "Could not load settings. Open this as an installed extension " +
-            "and check the storage permission.";
     }
+
+    if (!loaded) return;
+
+    // Save changes in the order they happen.
+    let saveQueue = Promise.resolve();
+
+    controls.forEach(control => {
+        control.addEventListener("change", () => {
+            const settings = readSettings();
+
+            showStatus("Saving...");
+
+            saveQueue = saveQueue
+                .then(() => chrome.storage.local.set({ settings }))
+                .then(() => {
+                    const mode = settings.educationMode ? "ON" : "OFF";
+
+                    showStatus(
+                        `Saved · Education ${mode} · ${settings.filterStrength}`
+                    );
+                })
+                .catch(error => {
+                    console.error("Reset saving error:", error);
+                    showStatus("Save failed. Reload the extension.");
+                });
+        });
+    });
 }
 
-initializePopup();
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startPopup);
+} else {
+    startPopup();
+}

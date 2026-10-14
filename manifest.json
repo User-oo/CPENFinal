@@ -1,18 +1,17 @@
-
 {
-  "manifest_version": 3,
-  "name": "Algorithm Reset",
-  "version": "1.0",
-  "description": "Filter social media content into educational topics.",
-  "permissions": ["storage"],
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://www.youtube.com/*"],
-      "js": ["content.js"]
-    }
-  ]
+    "manifest_version": 3,
+    "name": "AI Algorithm Reset",
+    "version": "0.1.0",
+    "description": "Filter YouTube Home videos by learning topics.",
+    "permissions": ["storage"],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://www.youtube.com/*"],
+            "js": ["content.js"],
+            "run_at": "document_idle"
+        }
+    ]
 }
-

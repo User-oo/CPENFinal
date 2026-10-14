@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Reset</title>
+
     <link rel="stylesheet" href="style.css">
+    <script src="popup.js" defer></script>
 </head>
+
 <body>
     <main class="app">
         <header class="header">
@@ -23,12 +27,16 @@
 
                     <label class="setting-row">
                         <span>Graphite dark theme</span>
-                        <input id="dark-theme" class="switch" type="checkbox">
+                        <input
+                            id="dark-theme"
+                            class="switch"
+                            type="checkbox"
+                        >
                     </label>
 
                     <label class="field">
                         Filter strength
-                        <select>
+                        <select id="filter-strength">
                             <option>Balanced</option>
                             <option>Strict</option>
                             <option>Gentle</option>
@@ -37,15 +45,15 @@
 
                     <label class="field">
                         Break reminder
-                        <select>
+                        <select id="break-reminder">
                             <option>After 15 minutes</option>
                             <option>After 30 minutes</option>
                             <option>Off</option>
                         </select>
                     </label>
 
-                    <p class="settings-note">
-                        Interface preview. Filtering is not connected yet.
+                    <p class="settings-note" role="status">
+                        Break reminders are not connected yet.
                     </p>
                 </section>
             </details>
@@ -59,7 +67,12 @@
         <section class="bubble">
             <label class="setting-row">
                 <span>Education mode</span>
-                <input class="switch" type="checkbox" checked>
+                <input
+                    id="education-mode"
+                    class="switch"
+                    type="checkbox"
+                    checked
+                >
             </label>
         </section>
 
@@ -89,7 +102,7 @@
             </div>
         </section>
 
-        <footer>More will be added soon.</footer>
+        <footer role="status">More will be added soon.</footer>
     </main>
 </body>
 </html>
