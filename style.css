@@ -286,3 +286,54 @@ footer {
         transition: transform 180ms ease, opacity 180ms ease;
     }
 }
+
+/* Wider extension popup */
+html {
+    width: 440px;
+}
+
+body {
+    min-height: auto;
+    padding: 16px;
+}
+
+.app {
+    width: 100%;
+    min-height: auto;
+    padding: 24px;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.intro {
+    margin-bottom: 22px;
+}
+
+.bubble {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+footer {
+    margin-top: 20px;
+}
+
+/* Keep settings compact too */
+.settings {
+    padding: 24px;
+}
+
+.settings h2 {
+    margin-bottom: 24px;
+}
+
+.settings .setting-row {
+    margin-bottom: 20px;
+}
+
+.field {
+    gap: 8px;
+    margin-bottom: 16px;
+}
